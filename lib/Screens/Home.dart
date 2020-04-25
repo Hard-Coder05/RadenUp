@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'CoinsPage.dart';
 import 'PlayPage.dart';
 import 'Settings.dart';
@@ -8,9 +9,35 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 class _HomeState extends State<Home> {
+  int points;
+  int level;
   @override
-  void initState() {
+   initState()  {
     super.initState();
+    readPoints() async {
+      final prefs = await SharedPreferences.getInstance();
+      final key = 'my_int_key';
+       points = prefs.getInt(key) ?? 400;
+    }
+    void savePoint() async {
+      final prefs = await SharedPreferences.getInstance();
+      final key = 'my_int_key';
+      points = prefs.getInt(key) ?? 400;
+      prefs.setInt(key, points+4);
+    }
+    readLevel() async {
+      final prefs = await SharedPreferences.getInstance();
+      final key = 'my_int_level';
+      level = prefs.getInt(key) ?? 0;
+    }
+    void saveLevel() async {
+      final prefs = await SharedPreferences.getInstance();
+      final key = 'my_int_level';
+      level = prefs.getInt(key) ?? 0;
+      prefs.setInt(key, level+1);
+    }
+    readLevel();
+    readPoints();
   }
   Future navigateToCoinsPage(context) async {
     Navigator.push(context, MaterialPageRoute(builder: (context) => CoinsPage()));
@@ -46,7 +73,7 @@ class _HomeState extends State<Home> {
                 padding: EdgeInsets.only(right: 20.0,top: 15.0),
                 child: GestureDetector(
                   onTap: () {navigateToCoinsPage(context);},
-                  child: Text("Points",textAlign: TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
+                  child: Text(points.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
                 )
             ),
           ],
@@ -76,7 +103,7 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text("Level:",style: TextStyle(fontSize: 60.0,color: Colors.white),),
-                                Text("level",style: TextStyle(fontSize: 60.0,color: Colors.red),)
+                                Text(level.toString(),style: TextStyle(fontSize: 60.0,color: Colors.red),)
                               ],
                             ),
                                CircleAvatar(
