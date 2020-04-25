@@ -118,7 +118,14 @@ class _HomeState extends State<Home> {
                                   color: Colors.lightGreen,
                                   child: new Text("PLAY",
                                       style: new TextStyle(fontSize: 30.0, color: Colors.white)),
-                                  onPressed:() {navigateToPlay(context);},
+                                  onPressed:() {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PlayPage(),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             )

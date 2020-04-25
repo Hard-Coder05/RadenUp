@@ -19,8 +19,9 @@ class _PlayPageState extends State<PlayPage> {
   @override
   initState()  {
     super.initState();
-    this.getJsonData();
     _loadCounter();
+    this.getJsonData();
+
   }
   Future<String> getJsonData() async{
     var response = await http.get(
