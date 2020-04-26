@@ -87,7 +87,7 @@ class _PlayPageState extends State<PlayPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Expanded(
-                      flex: 2,
+                      flex: 1,
                       child: Container(
                         padding: EdgeInsets.only(top:100.0),
                         child: Column(
@@ -118,6 +118,7 @@ class _PlayPageState extends State<PlayPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 showAnswerInput(),
+                                Padding(padding: const EdgeInsets.only(top: 20.0),),
                                 Container(
                                   decoration: new BoxDecoration(
                                     boxShadow: [
@@ -165,18 +166,12 @@ class _PlayPageState extends State<PlayPage> {
   verify(){
  final x=data[_level-1]['answer'];
  _answer=answerController.text;
- print(x);
- print(_answer);
  if(equalsIgnoreCase(x,_answer)){
    _incrementCounter();
    CorrectAnswer();
  }
  else{
-   return showDialog(context: context,builder: (context){
-     return AlertDialog(
-       title: Text("Tu chutiya hai"),
-     );
-   });
+   wrongAnswer();
  }
   }
   _incrementCounter() async {
@@ -186,6 +181,41 @@ class _PlayPageState extends State<PlayPage> {
      prefs.setInt("points", _points+4);
      prefs.setInt("levels", _level+1);
     });
+  }
+  wrongAnswer() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Sorry! You gave the wrong Answer!'),
+          content: Text('Play Again?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Home(),
+                  ),
+                );
+              },
+            ),
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlayPage(),
+                  ),
+                );
+              },
+            )
+          ],
+        );
+      },
+    ) ;
   }
   CorrectAnswer() {
     return showDialog(
