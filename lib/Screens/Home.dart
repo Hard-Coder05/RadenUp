@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'CoinsPage.dart';
 import 'PlayPage.dart';
-import 'Settings.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -23,17 +22,21 @@ class _HomeState extends State<Home> {
       _level = (prefs.getInt('levels') ?? 1);
     });
   }
-  Future navigateToCoinsPage(context) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CoinsPage()));
-  }
   Future navigateToSettings(context) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
+    //Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
   }
   Future navigateToPlay(context) async {
     Navigator.push(context, MaterialPageRoute(builder: (context) => PlayPage()));
   }
   @override
   Widget build(BuildContext context) {
+    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-7309415230190453~2798560443').then((response){
+    myBanner..load()..show(anchorOffset: 60.0,
+      // Positions the banner ad 10 pixels from the center of the screen to the right
+      horizontalCenterOffset: 10.0,
+      // Banner Position
+      anchorType: AnchorType.bottom,);
+    });
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: new Scaffold(
@@ -49,14 +52,14 @@ class _HomeState extends State<Home> {
             Padding(
                 padding: EdgeInsets.only(right: 10.0),
                 child: GestureDetector(
-                  onTap: () {navigateToCoinsPage(context);},
+                  onTap: () {CoinsPage();},
                   child: Icon(Icons.monetization_on,color: Colors.amber,size: 40.0,),
                 )
             ),
             Padding(
                 padding: EdgeInsets.only(right: 20.0,top: 15.0),
                 child: GestureDetector(
-                  onTap: () {navigateToCoinsPage(context);},
+                  onTap: () {CoinsPage();},
                   child: Text('$_points'.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
                 )
             ),
@@ -203,5 +206,64 @@ class _HomeState extends State<Home> {
       },
     ) ?? false;
   }
-
+Widget CoinsPage(){
+   showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Currently You have ''$_points'' coins'),
+        content: Text('Watch Adds to earn free coins .... '),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          FlatButton(
+            child: Text('Yes, Watch Add ?'),
+            onPressed: () {
+              //WatchAdd();
+            },
+          )
+        ],
+      );
+    },
+  );
 }
+/*WatchAdd(){
+  FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-7309415230190453~2798560443').then((response){
+    myInterstitial..load()..show();
+  });
+}*/
+}
+MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['games', 'pubg'],
+  contentUrl: 'https://flutter.io',
+  birthday: DateTime.now(),
+  childDirected: false,
+  designedForFamilies: false,
+  gender: MobileAdGender.male, // or MobileAdGender.female, MobileAdGender.unknown
+  testDevices: <String>["6347E1469C9B0EDCF60ECE5FC693D323"], // Android emulators are considered test devices
+);
+BannerAd myBanner = BannerAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: 'ca-app-pub-7309415230190453/6531891512',
+  size: AdSize.smartBanner,
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("BannerAd event is $event");
+  },
+);
+InterstitialAd myInterstitial = InterstitialAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: InterstitialAd.testAdUnitId,
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("InterstitialAd event is $event");
+  },
+);

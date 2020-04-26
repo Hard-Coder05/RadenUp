@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "611018887951",
+    "firebase_url": "https://name-game-984b5.firebaseio.com",
+    "project_id": "name-game-984b5",
+    "storage_bucket": "name-game-984b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:611018887951:android:1b696dea635d1a75eee47a",
+        "android_client_info": {
+          "package_name": "com.hardcoder05.namegame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "611018887951-kmicadgp6fo5vf92r013gf3b9kmddm2t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcVcTGYIPTbtA235Xj44QipLV6B53_mYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "611018887951-kmicadgp6fo5vf92r013gf3b9kmddm2t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

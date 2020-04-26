@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_future_builder/simple_future_builder.dart';
-import 'CoinsPage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'Home.dart';
@@ -17,9 +16,7 @@ class _PlayPageState extends State<PlayPage> {
   int _points=0;
   int _level=0;
   String _answer;
-  Future navigateToCoinsPage(context) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CoinsPage()));
-  }
+
   @override
   initState()  {
     super.initState();
@@ -67,7 +64,6 @@ class _PlayPageState extends State<PlayPage> {
               Padding(
                   padding: EdgeInsets.only(right: 20.0,top: 15.0),
                   child: GestureDetector(
-                    onTap: () {navigateToCoinsPage(context);},
                     child: Text('$_points'.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
                   )
               ),
