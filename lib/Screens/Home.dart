@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'PlayPage.dart';
 import 'package:firebase_admob/firebase_admob.dart';
@@ -31,7 +32,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-7309415230190453~2798560443').then((response){
-    myBanner..load()..show(anchorOffset: 60.0,
+    myBanner..load()..show(anchorOffset: 40.0,
       // Positions the banner ad 10 pixels from the center of the screen to the right
       horizontalCenterOffset: 10.0,
       // Banner Position
@@ -131,47 +132,40 @@ class _HomeState extends State<Home> {
                                   },
                                 ),
                               ),
+                            ),
+                            Padding(padding: const EdgeInsets.only(top:20.0),),
+                            Container(
+                              decoration: new BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.blueGrey,
+                                    blurRadius: 5.0, // has the effect of softening the shadow
+                                    spreadRadius: 2.0, // has the effect of extending the shadow
+                                    offset: Offset(
+                                      1.0, // horizontal, move right 10
+                                      1.0, // vertical, move down 10
+                                    ),
+                                  )
+                                ],
+                              ),
+                              child: SizedBox(
+                                height: 50.0,
+                                width: 150.0,
+                                child: new RaisedButton(
+                                  elevation: 50.0,
+                                  shape: new RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.circular(12.0)),
+                                  color: Colors.white,
+                                  child: new Text("Multiplayer",
+                                      style: new TextStyle(fontSize: 20.0, color: Colors.black45)),
+                                  onPressed:() {navigateToPlay(context);},
+                                ),
+                              ),
                             )
                           ],
                         ),
                       ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child:Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            decoration: new BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.blueGrey,
-                                  blurRadius: 5.0, // has the effect of softening the shadow
-                                  spreadRadius: 2.0, // has the effect of extending the shadow
-                                  offset: Offset(
-                                    1.0, // horizontal, move right 10
-                                    1.0, // vertical, move down 10
-                                  ),
-                                )
-                              ],
-                            ),
-                            child: SizedBox(
-                              height: 50.0,
-                              width: 150.0,
-                              child: new RaisedButton(
-                                elevation: 50.0,
-                                shape: new RoundedRectangleBorder(
-                                    borderRadius: new BorderRadius.circular(12.0)),
-                                color: Colors.white,
-                                child: new Text("Multiplayer",
-                                    style: new TextStyle(fontSize: 20.0, color: Colors.black45)),
-                                onPressed:() {navigateToPlay(context);},
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    )
                   ],
                 ),
               ),
@@ -223,7 +217,7 @@ Widget CoinsPage(){
           FlatButton(
             child: Text('Yes, Watch Add ?'),
             onPressed: () {
-              //WatchAdd();
+              WatchAdd();
             },
           )
         ],
@@ -231,11 +225,11 @@ Widget CoinsPage(){
     },
   );
 }
-/*WatchAdd(){
+WatchAdd(){
   FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-7309415230190453~2798560443').then((response){
     myInterstitial..load()..show();
   });
-}*/
+}
 }
 MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
   keywords: <String>['games', 'pubg'],
