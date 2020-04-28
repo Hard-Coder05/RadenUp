@@ -1,6 +1,8 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:namegame/Services/Connectivity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'PlayPage.dart';
 import 'package:firebase_admob/firebase_admob.dart';
@@ -11,10 +13,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _points=0;
   int _level=0;
+  Map _source = {ConnectivityResult.none: false};
+  MyConnectivity _connectivity = MyConnectivity.instance;
   @override
    initState()  {
     super.initState();
     _loadCounter();
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      setState(() => _source = source);
+    });
     FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-7309415230190453~2798560443');
     videoAd.load(adUnitId: 'ca-app-pub-7309415230190453/5992017222',targetingInfo: targetingInfo);
     RewardedVideoAd.instance.listener =
@@ -57,6 +65,17 @@ class _HomeState extends State<Home> {
       horizontalCenterOffset: 10.0,
       anchorType: AnchorType.bottom,);
     });
+    String string;
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        string = "0";
+        break;
+      case ConnectivityResult.mobile:
+        string = "1";
+        break;
+      case ConnectivityResult.wifi:
+        string = "2";
+    }
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: new Scaffold(
@@ -142,12 +161,31 @@ class _HomeState extends State<Home> {
                                   child: new Text("PLAY",
                                       style: new TextStyle(fontSize: 30.0, color: Colors.white)),
                                   onPressed:() {
-                                    Navigator.push(
+                                    if(string=="1"||string=="2"){Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => PlayPage(),
                                       ),
-                                    );
+                                    );}
+                                    else{
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text('You are not connected to any Network Services'),
+                                            content: Text('Please check your internet connection and try again'),
+                                            actions: <Widget>[
+                                              FlatButton(
+                                                child: Text('Okay'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop(false);
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
                                   },
                                 ),
                               ),
