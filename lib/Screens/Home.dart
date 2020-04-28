@@ -42,9 +42,6 @@ class _HomeState extends State<Home> {
       _level = (prefs.getInt('levels') ?? 1);
     });
   }
-  Future navigateToSettings(context) async {
-    //Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
-  }
   Future navigateToPlay(context) async {
     Navigator.push(context, MaterialPageRoute(builder: (context) => PlayPage()));
   }
@@ -66,7 +63,7 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           title: Text("Name-Game",style: TextStyle(fontSize: 20.0),),
           leading: GestureDetector(
-            onTap: () { navigateToSettings(context); },
+            onTap: () { },
             child: Icon(
               Icons.settings,  // add custom icons also
             ),
