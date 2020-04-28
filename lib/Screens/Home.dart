@@ -258,6 +258,17 @@ class _HomeState extends State<Home> {
     ) ?? false;
   }
 Widget CoinsPage(){
+    String string;
+  switch (_source.keys.toList()[0]) {
+    case ConnectivityResult.none:
+      string = "0";
+      break;
+    case ConnectivityResult.mobile:
+      string = "1";
+      break;
+    case ConnectivityResult.wifi:
+      string = "2";
+  }
    showDialog(
     context: context,
     builder: (context) {
@@ -274,7 +285,27 @@ Widget CoinsPage(){
           FlatButton(
             child: Text('Yes, Watch Add ?'),
             onPressed: () {
-              videoAd.show();
+             if(string=="1"||string=="2"){videoAd.show();
+              Navigator.of(context).pop(false);}
+             else{
+               showDialog(
+                 context: context,
+                 builder: (context) {
+                   return AlertDialog(
+                     title: Text('You are not connected to any Network Services'),
+                     content: Text('Please check your internet connection and try again'),
+                     actions: <Widget>[
+                       FlatButton(
+                         child: Text('Okay'),
+                         onPressed: () {
+                           Navigator.of(context).pop(false);
+                         },
+                       ),
+                     ],
+                   );
+                 },
+               );
+             }
             },
           )
         ],
