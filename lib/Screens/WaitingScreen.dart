@@ -1,24 +1,9 @@
 import 'package:flutter/material.dart';
-import 'Home.dart';
-class SplashScreen extends StatefulWidget {
+class WaitingScreen extends StatefulWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  _WaitingScreenState createState() => _WaitingScreenState();
 }
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(
-      Duration(seconds: 5),
-          (){
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(
-              builder: (context)=> Home(),
-            ),(e) => false
-        );
-      },
-    );
-  }
+class _WaitingScreenState extends State<WaitingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
               image: new DecorationImage(
                 image: new AssetImage("assets/background.png"),
                 fit: BoxFit.fill,),
-                ),
+            ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -50,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         ),
                       ),
                       Padding(padding: const EdgeInsets.only(top: 60.0),),
-                      Text("Welcome to Name-Game",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),)
+                      Text("Please Wait while we load the questions",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),)
                     ],
                   ),
                 ),

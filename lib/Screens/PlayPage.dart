@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_future_builder/simple_future_builder.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'Home.dart';
+import 'WaitingScreen.dart';
 class PlayPage extends StatefulWidget {
   @override
   _PlayPageState createState() => _PlayPageState();
@@ -16,22 +16,30 @@ class _PlayPageState extends State<PlayPage> {
   int _points=0;
   int _level=0;
   String _answer;
-
+  var isLoading = false;
   @override
   initState()  {
     super.initState();
     _loadCounter();
- this.getJsonData();
+    _fetchData();
   }
-  Future<String> getJsonData() async{
+  _fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
     var response = await http.get(
         Uri.encodeFull(url),
         headers: {"Accept": "application/json"}
     );
-    setState(() {
-      var convertDataToJson=json.decode(response.body);
-      data = convertDataToJson['results'];
-    });
+    if (response!=null) {
+      setState(() {
+        var convertDataToJson=json.decode(response.body);
+        data = convertDataToJson['results'];
+        isLoading=false;
+      });
+    } else {
+      throw Exception('Failed to load questions');
+    }
   }
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -42,9 +50,7 @@ class _PlayPageState extends State<PlayPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return SimpleFutureBuilder<http.Response>(
-      future: http.get(Uri.encodeFull(url),headers: {"Accept": "application/json"}),
-      builder: (BuildContext context, http.Response response)=> Scaffold(
+    return Scaffold(
           appBar: AppBar(
             title: Text("Level: "'$_level'.toString(),style: TextStyle(fontSize: 40.0,color: Colors.red),),
             leading: GestureDetector(
@@ -69,7 +75,9 @@ class _PlayPageState extends State<PlayPage> {
               ),
             ],
           ),
-          body: Stack(
+          body: isLoading
+              ? WaitingScreen()
+          : Stack(
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
@@ -94,10 +102,10 @@ class _PlayPageState extends State<PlayPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Image.network(
-                                    json.decode(response.body)['results'][_level-1]['options'][0]['image'],height: 160,width: 160,fit: BoxFit.fill,
+                                    data[_level-1]['options'][0]['image'],height: 160,width: 160,fit: BoxFit.fill,
                                   ),
                                   Image.network(
-                                    json.decode(response.body)['results'][_level-1]['options'][1]['image'],height: 160,width: 160,fit: BoxFit.fill,
+                                    data[_level-1]['options'][1]['image'],height: 160,width: 160,fit: BoxFit.fill,
                                   ),
                                 ],
                               ),
@@ -105,10 +113,10 @@ class _PlayPageState extends State<PlayPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   Image.network(
-                                    json.decode(response.body)['results'][_level-1]['options'][2]['image'],height: 160,width: 160,fit: BoxFit.fill,
+                                    data[_level-1]['options'][2]['image'],height: 160,width: 160,fit: BoxFit.fill,
                                   ),
                                   Image.network(
-                                    json.decode(response.body)['results'][_level-1]['options'][3]['image'],height: 160,width: 160,fit: BoxFit.fill,
+                                    data[_level-1]['options'][3]['image'],height: 160,width: 160,fit: BoxFit.fill,
                                   ),
                                 ],
                               ),
@@ -161,8 +169,7 @@ class _PlayPageState extends State<PlayPage> {
               ),
             ],
           ),
-        ),
-    );
+        );
   }
   verify(){
  final x=data[_level-1]['answer'];

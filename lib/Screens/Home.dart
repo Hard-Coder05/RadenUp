@@ -15,6 +15,25 @@ class _HomeState extends State<Home> {
    initState()  {
     super.initState();
     _loadCounter();
+    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-7309415230190453~2798560443');
+    videoAd.load(adUnitId: 'ca-app-pub-7309415230190453/5992017222',targetingInfo: targetingInfo);
+    RewardedVideoAd.instance.listener =
+        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+      if (event == RewardedVideoAdEvent.rewarded) {
+        setState(() {
+          _incrementCounter();
+        });
+      }
+    };
+  }
+  RewardedVideoAd videoAd = RewardedVideoAd.instance;
+  _incrementCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int counter = (prefs.getInt('counter') ?? 0) + 1;
+    setState(() {
+      prefs.setInt("points", _points+50);
+      _loadCounter();
+    });
   }
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -30,12 +49,15 @@ class _HomeState extends State<Home> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => PlayPage()));
   }
   @override
+  void dispose(){
+    myBanner.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-7309415230190453~2798560443').then((response){
     myBanner..load()..show(anchorOffset: 40.0,
-      // Positions the banner ad 10 pixels from the center of the screen to the right
       horizontalCenterOffset: 10.0,
-      // Banner Position
       anchorType: AnchorType.bottom,);
     });
     return WillPopScope(
@@ -217,18 +239,13 @@ Widget CoinsPage(){
           FlatButton(
             child: Text('Yes, Watch Add ?'),
             onPressed: () {
-              WatchAdd();
+              videoAd.show();
             },
           )
         ],
       );
     },
   );
-}
-WatchAdd(){
-  FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-7309415230190453~2798560443').then((response){
-    myInterstitial..load()..show();
-  });
 }
 }
 MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
@@ -249,15 +266,5 @@ BannerAd myBanner = BannerAd(
   targetingInfo: targetingInfo,
   listener: (MobileAdEvent event) {
     print("BannerAd event is $event");
-  },
-);
-InterstitialAd myInterstitial = InterstitialAd(
-  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
-  // https://developers.google.com/admob/android/test-ads
-  // https://developers.google.com/admob/ios/test-ads
-  adUnitId: InterstitialAd.testAdUnitId,
-  targetingInfo: targetingInfo,
-  listener: (MobileAdEvent event) {
-    print("InterstitialAd event is $event");
   },
 );
