@@ -23,6 +23,8 @@ class _PlayPageState extends State<PlayPage> {
     _loadCounter();
     _fetchData();
   }
+
+  //fetches data from the API and converts it to JSON
   _fetchData() async {
     setState(() {
       isLoading = true;
@@ -41,6 +43,8 @@ class _PlayPageState extends State<PlayPage> {
       throw Exception('Failed to load questions');
     }
   }
+
+  //loads the data(level and coins) stored in the shared preferences
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -48,129 +52,137 @@ class _PlayPageState extends State<PlayPage> {
       _level = (prefs.getInt('levels') ?? 1);
     });
   }
+
+  //widget
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-          appBar: AppBar(
-            title: Text("Level: "'$_level'.toString(),style: TextStyle(fontSize: 40.0,color: Colors.red),),
-            leading: GestureDetector(
-              onTap: () { Navigator.pop(context); },
-              child: Icon(
-                Icons.arrow_back_ios,  // add custom icons also
-              ),
-            ),
-            actions: <Widget>[
-              Padding(
-                  padding: EdgeInsets.only(right: 10.0),
-                  child: GestureDetector(
-                    onTap: () {Navigator.pop(context);},
-                    child: Icon(Icons.monetization_on,color: Colors.amber,size: 40.0,),
-                  )
-              ),
-              Padding(
-                  padding: EdgeInsets.only(right: 20.0,top: 15.0),
-                  child: GestureDetector(
-                    child: Text('$_points'.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
-                  )
-              ),
-            ],
-          ),
-          body: isLoading
-              ? WaitingScreen()
-          : Stack(
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  image: new DecorationImage(
-                    image: new AssetImage("assets/background.png"),
-                    fit: BoxFit.fill,),
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+            appBar: AppBar(
+              title: Text("Level: "'$_level'.toString(),style: TextStyle(fontSize: 40.0,color: Colors.red),),
+              leading: GestureDetector(
+                onTap: () { Navigator.pop(context); },
+                child: Icon(
+                  Icons.arrow_back_ios,  // add custom icons also
                 ),
               ),
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          padding: EdgeInsets.only(top:20.0),
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.network(
-                                    data[_level-1]['options'][0]['image'],height: 160,width: 160,fit: BoxFit.fill,
-                                  ),
-                                  Image.network(
-                                    data[_level-1]['options'][1]['image'],height: 160,width: 160,fit: BoxFit.fill,
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.network(
-                                    data[_level-1]['options'][2]['image'],height: 160,width: 160,fit: BoxFit.fill,
-                                  ),
-                                  Image.network(
-                                    data[_level-1]['options'][3]['image'],height: 160,width: 160,fit: BoxFit.fill,
-                                  ),
-                                ],
-                              ),
-                              SingleChildScrollView(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    showAnswerInput(),
-                                    Padding(padding: const EdgeInsets.only(top: 20.0),),
-                                    Container(
-                                      decoration: new BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.white,
-                                            blurRadius: 5.0, // has the effect of softening the shadow
-                                            spreadRadius: 2.0, // has the effect of extending the shadow
-                                            offset: Offset(
-                                              1.0, // horizontal, move right 10
-                                              1.0, // vertical, move down 10
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      child: SizedBox(
-                                        height: 60.0,
-                                        width: 300.0,
-                                        child: new RaisedButton(
-                                          elevation: 50.0,
-                                          shape: new RoundedRectangleBorder(
-                                              borderRadius: new BorderRadius.circular(12.0)),
-                                          color: Colors.lightGreen,
-                                          child: new Text("SUBMIT",
-                                              style: new TextStyle(fontSize: 30.0, color: Colors.white)),
-                                          onPressed:() {
-                                            verify();
-                                          },
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+              actions: <Widget>[
+                Padding(
+                    padding: EdgeInsets.only(right: 10.0),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Icon(Icons.monetization_on,color: Colors.amber,size: 40.0,),
+                    )
+                ),
+                Padding(
+                    padding: EdgeInsets.only(right: 20.0,top: 15.0),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Text('$_points'.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
+                    )
+                ),
+              ],
+            ),
+            body: isLoading
+                ? WaitingScreen()
+            : Stack(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                    image: new DecorationImage(
+                      image: new AssetImage("assets/background.png"),
+                      fit: BoxFit.fill,),
                   ),
                 ),
-              ),
-            ],
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            padding: EdgeInsets.only(top:20.0),
+                            child: Column(
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.network(
+                                      data[_level-1]['options'][0]['image'],height: 160,width: 160,fit: BoxFit.fill,
+                                    ),
+                                    Image.network(
+                                      data[_level-1]['options'][1]['image'],height: 160,width: 160,fit: BoxFit.fill,
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.network(
+                                      data[_level-1]['options'][2]['image'],height: 160,width: 160,fit: BoxFit.fill,
+                                    ),
+                                    Image.network(
+                                      data[_level-1]['options'][3]['image'],height: 160,width: 160,fit: BoxFit.fill,
+                                    ),
+                                  ],
+                                ),
+                                SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      showAnswerInput(),
+                                      Padding(padding: const EdgeInsets.only(top: 20.0),),
+                                      Container(
+                                        decoration: new BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.white,
+                                              blurRadius: 5.0, // has the effect of softening the shadow
+                                              spreadRadius: 2.0, // has the effect of extending the shadow
+                                              offset: Offset(
+                                                1.0, // horizontal, move right 10
+                                                1.0, // vertical, move down 10
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        child: SizedBox(
+                                          height: 60.0,
+                                          width: 300.0,
+                                          child: new RaisedButton(
+                                            elevation: 50.0,
+                                            shape: new RoundedRectangleBorder(
+                                                borderRadius: new BorderRadius.circular(12.0)),
+                                            color: Colors.lightGreen,
+                                            child: new Text("SUBMIT",
+                                                style: new TextStyle(fontSize: 30.0, color: Colors.white)),
+                                            onPressed:() {
+                                              verify();
+                                            },
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        );
+    );
   }
+
+  //verifies whether the answer is correct or not
   verify(){
  final x=data[_level-1]['answer'];
  _answer=answerController.text;
@@ -182,6 +194,8 @@ class _PlayPageState extends State<PlayPage> {
    wrongAnswer();
  }
   }
+
+  // increments the level and score if the answer is correct
   _incrementCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final int counter = (prefs.getInt('counter') ?? 0) + 1;
@@ -190,6 +204,8 @@ class _PlayPageState extends State<PlayPage> {
      prefs.setInt("levels", _level+1);
     });
   }
+
+  // Appears on screen if answer is wrong
   wrongAnswer() {
     return showDialog(
       context: context,
@@ -201,23 +217,17 @@ class _PlayPageState extends State<PlayPage> {
             FlatButton(
               child: Text('No'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Home(),
-                  ),
-                );
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context) => Home(),
+                ), (e) => false);
               },
             ),
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PlayPage(),
-                  ),
-                );
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context) => PlayPage(),
+                ), (e) => false);
               },
             )
           ],
@@ -225,6 +235,37 @@ class _PlayPageState extends State<PlayPage> {
       },
     ) ;
   }
+
+  // Appears on screen if user presses back on androis screen
+  Future<bool> _onBackPressed() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Are you sure?'),
+          content: Text('Do you want to exit the Game'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context) => Home(),
+                ), (e) => false);
+              },
+            )
+          ],
+        );
+      },
+    ) ?? false;
+  }
+
+  // Appears if the answer given by the user is correct
   CorrectAnswer() {
     return showDialog(
       context: context,
@@ -236,23 +277,17 @@ class _PlayPageState extends State<PlayPage> {
             FlatButton(
               child: Text('No'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Home(),
-                  ),
-                );
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context) => Home(),
+                ), (e) => false);
               },
             ),
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PlayPage(),
-                  ),
-                );
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context) => PlayPage(),
+                ), (e) => false);
               },
             )
           ],
@@ -260,6 +295,8 @@ class _PlayPageState extends State<PlayPage> {
       },
     ) ;
   }
+
+  // to compare two strings irrespective of their cases
   bool equalsIgnoreCase(String a, String b) =>
       (a == null && b == null) ||
           (a != null && b != null && a.toLowerCase() == b.toLowerCase());
@@ -269,6 +306,8 @@ class _PlayPageState extends State<PlayPage> {
   }
   final FocusNode _answerFocus = FocusNode();
   final answerController = TextEditingController();
+
+  // Shows Answer Input Box
   Widget showAnswerInput() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 0.0),
@@ -294,6 +333,8 @@ class _PlayPageState extends State<PlayPage> {
       ),
     );
   }
+
+  // disposes the super and answer controller
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.

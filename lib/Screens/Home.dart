@@ -34,6 +34,8 @@ class _HomeState extends State<Home> {
       }
     };
   }
+
+  // function to add reward to the player if successfully completed the reward video
   RewardedVideoAd videoAd = RewardedVideoAd.instance;
   _incrementCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,6 +45,8 @@ class _HomeState extends State<Home> {
       _loadCounter();
     });
   }
+
+  // loads the data (level and score) stored in the shared preferences
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -50,14 +54,20 @@ class _HomeState extends State<Home> {
       _level = (prefs.getInt('levels') ?? 1);
     });
   }
+
+  //routees the user to the play pages
   Future navigateToPlay(context) async {
     Navigator.push(context, MaterialPageRoute(builder: (context) => PlayPage()));
   }
+
+  //disposes the banner ad and super
   @override
   void dispose(){
     myBanner.dispose();
     super.dispose();
   }
+
+  // widget
   @override
   Widget build(BuildContext context) {
     FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-7309415230190453~2798560443').then((response){
@@ -82,10 +92,7 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           title: Text("Name-Game",style: TextStyle(fontSize: 20.0),),
           leading: GestureDetector(
-            onTap: () { },
-            child: Icon(
-              Icons.settings,  // add custom icons also
-            ),
+            onTap: () {},
           ),
           actions: <Widget>[
             Padding(
@@ -136,6 +143,7 @@ class _HomeState extends State<Home> {
                                 backgroundImage: AssetImage("assets/icon.png"),
                                 radius: 110.0,
                               ),
+                            Padding(padding: const EdgeInsets.only(top:20.0),),
                             Container(
                               decoration: new BoxDecoration(
                                 boxShadow: [
@@ -190,35 +198,7 @@ class _HomeState extends State<Home> {
                                 ),
                               ),
                             ),
-                            Padding(padding: const EdgeInsets.only(top:20.0),),
-                            Container(
-                              decoration: new BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.blueGrey,
-                                    blurRadius: 5.0, // has the effect of softening the shadow
-                                    spreadRadius: 2.0, // has the effect of extending the shadow
-                                    offset: Offset(
-                                      1.0, // horizontal, move right 10
-                                      1.0, // vertical, move down 10
-                                    ),
-                                  )
-                                ],
-                              ),
-                              child: SizedBox(
-                                height: 50.0,
-                                width: 150.0,
-                                child: new RaisedButton(
-                                  elevation: 50.0,
-                                  shape: new RoundedRectangleBorder(
-                                      borderRadius: new BorderRadius.circular(12.0)),
-                                  color: Colors.white,
-                                  child: new Text("Multiplayer",
-                                      style: new TextStyle(fontSize: 20.0, color: Colors.black45)),
-                                  onPressed:() {navigateToPlay(context);},
-                                ),
-                              ),
-                            )
+
                           ],
                         ),
                       ),
@@ -232,6 +212,8 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  // appears on screen if user presses the back button
   Future<bool> _onBackPressed() {
     return showDialog(
       context: context,
@@ -257,6 +239,8 @@ class _HomeState extends State<Home> {
       },
     ) ?? false;
   }
+
+  //appears on the screen to give user reward
 Widget CoinsPage(){
     String string;
   switch (_source.keys.toList()[0]) {
@@ -314,6 +298,8 @@ Widget CoinsPage(){
   );
 }
 }
+
+//mobile ad targetting info
 MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
   keywords: <String>['games', 'pubg'],
   contentUrl: 'https://flutter.io',
@@ -323,6 +309,8 @@ MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
   gender: MobileAdGender.male, // or MobileAdGender.female, MobileAdGender.unknown
   testDevices: <String>["6347E1469C9B0EDCF60ECE5FC693D323"], // Android emulators are considered test devices
 );
+
+// initialization of banner ad
 BannerAd myBanner = BannerAd(
   // Replace the testAdUnitId with an ad unit id from the AdMob dash.
   // https://developers.google.com/admob/android/test-ads

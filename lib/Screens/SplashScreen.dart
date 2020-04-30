@@ -8,6 +8,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
+    // to make the splash screen stay on display for 5 seconds
     Future.delayed(
       Duration(seconds: 5),
           (){
@@ -19,6 +21,8 @@ class _SplashScreenState extends State<SplashScreen> {
       },
     );
   }
+
+  //widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
