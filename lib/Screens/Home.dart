@@ -177,6 +177,7 @@ class _HomeState extends State<Home> {
                                     );}
                                     else{
                                       showDialog(
+                                        barrierDismissible: false,
                                         context: context,
                                         builder: (context) {
                                           return AlertDialog(
@@ -216,6 +217,7 @@ class _HomeState extends State<Home> {
   // appears on screen if user presses the back button
   Future<bool> _onBackPressed() {
     return showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -254,6 +256,7 @@ Widget CoinsPage(){
       string = "2";
   }
    showDialog(
+     barrierDismissible: false,
     context: context,
     builder: (context) {
       return AlertDialog(

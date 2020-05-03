@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -278,6 +276,7 @@ class _PlayPageState extends State<PlayPage> {
   // Appears on screen if answer is wrong
   wrongAnswer() {
     return showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -309,6 +308,7 @@ class _PlayPageState extends State<PlayPage> {
   // Appears on screen if user presses back on androis screen
   Future<bool> _onBackPressed() {
     return showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -338,6 +338,7 @@ class _PlayPageState extends State<PlayPage> {
   // Appears if the answer given by the user is correct
   CorrectAnswer() {
     return showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
