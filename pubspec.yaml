@@ -24,6 +24,7 @@ dependencies:
   firebase_admob: ^0.9.3+2
   cupertino_icons: ^0.1.2
   connectivity: ^0.4.8+2
+  basic_utils:
 
 dev_dependencies:
   flutter_test:

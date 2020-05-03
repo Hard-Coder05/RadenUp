@@ -1,3 +1,5 @@
+import 'dart:math';
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -15,7 +17,10 @@ class _PlayPageState extends State<PlayPage> {
   List data;
   int _points=0;
   int _level=0;
-  String _answer;
+  String _answer=" ";
+  List answerOptions;
+  String s="";
+  String answer="";
   var isLoading = false;
   @override
   initState()  {
@@ -37,6 +42,7 @@ class _PlayPageState extends State<PlayPage> {
       setState(() {
         var convertDataToJson=json.decode(response.body);
         data = convertDataToJson['results'];
+        answer=data[_level-1]['answer'];
         isLoading=false;
       });
     } else {
@@ -62,7 +68,7 @@ class _PlayPageState extends State<PlayPage> {
             appBar: AppBar(
               title: Text("Level: "'$_level'.toString(),style: TextStyle(fontSize: 40.0,color: Colors.red),),
               leading: GestureDetector(
-                onTap: () { Navigator.pop(context); },
+                onTap: () { _onBackPressed(); },
                 child: Icon(
                   Icons.arrow_back_ios,  // add custom icons also
                 ),
@@ -129,45 +135,44 @@ class _PlayPageState extends State<PlayPage> {
                                     ),
                                   ],
                                 ),
-                                SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      showAnswerInput(),
-                                      Padding(padding: const EdgeInsets.only(top: 20.0),),
-                                      Container(
-                                        decoration: new BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.white,
-                                              blurRadius: 5.0, // has the effect of softening the shadow
-                                              spreadRadius: 2.0, // has the effect of extending the shadow
-                                              offset: Offset(
-                                                1.0, // horizontal, move right 10
-                                                1.0, // vertical, move down 10
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        child: SizedBox(
-                                          height: 60.0,
-                                          width: 300.0,
-                                          child: new RaisedButton(
-                                            elevation: 50.0,
-                                            shape: new RoundedRectangleBorder(
-                                                borderRadius: new BorderRadius.circular(12.0)),
-                                            color: Colors.lightGreen,
-                                            child: new Text("SUBMIT",
-                                                style: new TextStyle(fontSize: 30.0, color: Colors.white)),
-                                            onPressed:() {
-                                              verify();
-                                            },
-                                          ),
-                                        ),
-                                      )
-                                    ],
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 30.0),
+                                ),
+                                SizedBox(
+                                  height: 40.0,
+                                  width: 250.0,
+                                  child: new RaisedButton(
+                                    elevation: 50.0,
+                                    shape: new RoundedRectangleBorder(
+                                        borderRadius: new BorderRadius.circular(12.0)),
+                                    color: Colors.lightGreen,
+                                    child: new Text("Your Answer",
+                                        style: new TextStyle(fontSize: 30.0, color: Colors.white)),
                                   ),
-                                )
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                ),
+                                showAnsweredOptions(),
+                                 Padding(
+                                   padding: const EdgeInsets.only(top: 30.0),
+                                 ),
+                                SizedBox(
+                                  height: 40.0,
+                                  width: 250.0,
+                                  child: new RaisedButton(
+                                    elevation: 50.0,
+                                    shape: new RoundedRectangleBorder(
+                                        borderRadius: new BorderRadius.circular(12.0)),
+                                    color: Colors.lightGreen,
+                                    child: new Text("Given Letters",
+                                        style: new TextStyle(fontSize: 30.0, color: Colors.white)),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                ),
+                                 showAnswerOptions(),
                               ],
                             ),
                           ),
@@ -176,17 +181,82 @@ class _PlayPageState extends State<PlayPage> {
                     ),
                   ),
                 ),
-              ],
+                ],
+
             ),
           ),
     );
   }
 
-  //verifies whether the answer is correct or not
+  // to add answer into answered variable
+  addToAnswered(String asdf) {
+    _answer=_answer+asdf;
+    answer=answer.replaceFirst(new RegExp(asdf), '');
+    showAnswerOptions();
+    showAnsweredOptions();
+    if(answer.isEmpty){
+      verify();
+    }
+  }
+
+  // To remove letters from Answered and adding it back into given option
+  removeFromAnswered(String asdf) {
+    answer=answer+asdf;
+    _answer=_answer.replaceFirst(new RegExp(asdf), '');
+    showAnswerOptions();
+    showAnsweredOptions();
+  }
+
+  //
+  Widget showAnswerOptions(){
+    return GridView.count(
+        primary: false,
+        crossAxisCount: 10,
+        childAspectRatio: 1.0,
+        padding: const EdgeInsets.all(2.0),
+        mainAxisSpacing: 10.0,
+        crossAxisSpacing: 5.0,
+        shrinkWrap: true,
+        children: (answer.split('')).map((String urla) {
+          return GridTile(
+              child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      addToAnswered(urla);
+                    });
+                  },
+                  child: Container( height:25.0,width:25.0,color:Colors.red,child: Text(urla,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20.0),)))
+          );
+        }).toList());
+  }
+
+  //
+  Widget showAnsweredOptions(){
+    return GridView.count(
+        primary: false,
+        crossAxisCount: 10,
+        childAspectRatio: 1.0,
+        padding: const EdgeInsets.all(4.0),
+        mainAxisSpacing: 4.0,
+        crossAxisSpacing: 4.0,
+        shrinkWrap: true,
+        children: (_answer.trim().split('')).map((String urla) {
+          return GridTile(
+              child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      removeFromAnswered(urla);
+                    });
+                  },
+                  child: Container(height:25.0,width:25.0,color:Colors.green,child: Text(urla,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20.0),)))
+          );
+        }).toList());
+  }
+
+    //verifies whether the answer is correct or not
   verify(){
- final x=data[_level-1]['answer'];
- _answer=answerController.text;
- if(equalsIgnoreCase(x,_answer)){
+    String x=data[_level-1]['answer'];
+ if(equalsIgnoreCase(x.trim(),_answer.trim())){
    _incrementCounter();
    CorrectAnswer();
  }
