@@ -241,65 +241,6 @@ class _HomeState extends State<Home> {
       },
     ) ?? false;
   }
-
-  //appears on the screen to give user reward
-Widget CoinsPage(){
-    String string;
-  switch (_source.keys.toList()[0]) {
-    case ConnectivityResult.none:
-      string = "0";
-      break;
-    case ConnectivityResult.mobile:
-      string = "1";
-      break;
-    case ConnectivityResult.wifi:
-      string = "2";
-  }
-   showDialog(
-     barrierDismissible: false,
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Currently You have ''$_points'' coins'),
-        content: Text('Watch Adds to earn free coins .... '),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
-          FlatButton(
-            child: Text('Yes, Watch Add ?'),
-            onPressed: () {
-             if(string=="1"||string=="2"){videoAd.show();
-              Navigator.of(context).pop(false);}
-             else{
-               showDialog(
-                 context: context,
-                 builder: (context) {
-                   return AlertDialog(
-                     title: Text('You are not connected to any Network Services'),
-                     content: Text('Please check your internet connection and try again'),
-                     actions: <Widget>[
-                       FlatButton(
-                         child: Text('Okay'),
-                         onPressed: () {
-                           Navigator.of(context).pop(false);
-                         },
-                       ),
-                     ],
-                   );
-                 },
-               );
-             }
-            },
-          )
-        ],
-      );
-    },
-  );
-}
 }
 
 //mobile ad targetting info
