@@ -98,14 +98,14 @@ class _HomeState extends State<Home> {
             Padding(
                 padding: EdgeInsets.only(right: 10.0),
                 child: GestureDetector(
-                  onTap: () {CoinsPage();},
+                  onTap: () {},
                   child: Icon(Icons.monetization_on,color: Colors.amber,size: 40.0,),
                 )
             ),
             Padding(
                 padding: EdgeInsets.only(right: 20.0,top: 15.0),
                 child: GestureDetector(
-                  onTap: () {CoinsPage();},
+                  onTap: () {},
                   child: Text('$_points'.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
                 )
             ),
@@ -306,10 +306,7 @@ Widget CoinsPage(){
 MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
   keywords: <String>['games', 'pubg'],
   contentUrl: 'https://flutter.io',
-  birthday: DateTime.now(),
-  childDirected: false,
-  designedForFamilies: false,
-  gender: MobileAdGender.male, // or MobileAdGender.female, MobileAdGender.unknown
+  childDirected: false, // or MobileAdGender.female, MobileAdGender.unknown
   testDevices: <String>["6347E1469C9B0EDCF60ECE5FC693D323"], // Android emulators are considered test devices
 );
 

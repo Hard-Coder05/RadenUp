@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import '../model/questions.dart';
 import 'Home.dart';
 import 'WaitingScreen.dart';
 class PlayPage extends StatefulWidget {
@@ -11,8 +10,7 @@ class PlayPage extends StatefulWidget {
   _PlayPageState createState() => _PlayPageState();
 }
 class _PlayPageState extends State<PlayPage> {
-  final String url = "http://3.6.119.41:5000/quiz/questions/";
-  List data;
+  List data=Model().questions;
   int _points=0;
   int _level=0;
   String _answer=" ";
@@ -24,36 +22,16 @@ class _PlayPageState extends State<PlayPage> {
   initState()  {
     super.initState();
     _loadCounter();
-    _fetchData();
   }
 
-  //fetches data from the API and converts it to JSON
-  _fetchData() async {
-    setState(() {
-      isLoading = true;
-    });
-    var response = await http.get(
-        Uri.encodeFull(url),
-        headers: {"Accept": "application/json"}
-    );
-    if (response!=null) {
-      setState(() {
-        var convertDataToJson=json.decode(response.body);
-        data = convertDataToJson['results'];
-        answer=data[_level-1]['answer'];
-        isLoading=false;
-      });
-    } else {
-      throw Exception('Failed to load questions');
-    }
-  }
-
+  
   //loads the data(level and coins) stored in the shared preferences
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _points = (prefs.getInt('points') ?? 400);
       _level = (prefs.getInt('levels') ?? 1);
+      answer=data[_level-1]['answer'];
     });
   }
 
@@ -205,8 +183,8 @@ class _PlayPageState extends State<PlayPage> {
     showAnsweredOptions();
   }
 
-  //
   Widget showAnswerOptions(){
+    List ans=answer.split('').toList()..shuffle();
     return GridView.count(
         primary: false,
         crossAxisCount: 10,
@@ -215,7 +193,7 @@ class _PlayPageState extends State<PlayPage> {
         mainAxisSpacing: 10.0,
         crossAxisSpacing: 5.0,
         shrinkWrap: true,
-        children: (answer.split('')).map((String urla) {
+        children: (ans).map((urla) {
           return GridTile(
               child: GestureDetector(
                   onTap: () {
@@ -371,45 +349,10 @@ class _PlayPageState extends State<PlayPage> {
   bool equalsIgnoreCase(String a, String b) =>
       (a == null && b == null) ||
           (a != null && b != null && a.toLowerCase() == b.toLowerCase());
-  _fieldFocusChange(BuildContext context, FocusNode currentFocus,FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
-  }
-  final FocusNode _answerFocus = FocusNode();
-  final answerController = TextEditingController();
-
-  // Shows Answer Input Box
-  Widget showAnswerInput() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 0.0),
-      child: new TextFormField(
-        controller: answerController,
-        textInputAction: TextInputAction.next,
-        validator: (value) => value.isEmpty ? 'Answer can\'t be empty' : null,
-        onFieldSubmitted: (term){
-          _fieldFocusChange(context, _answerFocus, verify());
-        },
-        focusNode: _answerFocus,
-        maxLines: 1,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: new InputDecoration(
-            hintText: 'Answer',
-            icon: new Icon(
-              Icons.arrow_forward,
-              color: Colors.grey,
-            )
-        ),
-        onSaved: (value) => _answer = value.trim(),
-      ),
-    );
-  }
 
   // disposes the super and answer controller
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
-    answerController.dispose();
     super.dispose();
   }
 }
