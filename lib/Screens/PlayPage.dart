@@ -5,33 +5,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/questions.dart';
 import 'Home.dart';
 import 'WaitingScreen.dart';
+
 class PlayPage extends StatefulWidget {
   @override
   _PlayPageState createState() => _PlayPageState();
 }
+
 class _PlayPageState extends State<PlayPage> {
-  List data=Model().questions;
-  int _points=0;
-  int _level=0;
-  String _answer=" ";
+  List data = Model().questions;
+  int _points = 0;
+  int _level = 0;
+  String _answer = " ";
   List answerOptions;
-  String s="";
-  String answer="";
+  String s = "";
+  String answer = "";
   var isLoading = false;
   @override
-  initState()  {
+  initState() {
     super.initState();
     _loadCounter();
   }
 
-  
   //loads the data(level and coins) stored in the shared preferences
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _points = (prefs.getInt('points') ?? 400);
       _level = (prefs.getInt('levels') ?? 1);
-      answer=data[_level-1]['answer'];
+      answer = data[_level - 1]['answer'];
     });
   }
 
@@ -41,150 +42,180 @@ class _PlayPageState extends State<PlayPage> {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-            appBar: AppBar(
-              title: Text("Level: "'$_level'.toString(),style: TextStyle(fontSize: 40.0,color: Colors.red),),
-              leading: GestureDetector(
-                onTap: () { _onBackPressed(); },
-                child: Icon(
-                  Icons.arrow_back_ios,  // add custom icons also
-                ),
-              ),
-              actions: <Widget>[
-                Padding(
-                    padding: EdgeInsets.only(right: 10.0),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Icon(Icons.monetization_on,color: Colors.amber,size: 40.0,),
-                    )
-                ),
-                Padding(
-                    padding: EdgeInsets.only(right: 20.0,top: 15.0),
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Text('$_points'.toString(),textAlign: TextAlign.center,style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),),
-                    )
-                ),
-              ],
-            ),
-            body: isLoading
-                ? WaitingScreen()
-            : Stack(
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    image: new DecorationImage(
-                      image: new AssetImage("assets/background.png"),
-                      fit: BoxFit.fill,),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            padding: EdgeInsets.only(top:20.0),
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.network(
-                                      data[_level-1]['options'][0]['image'],height: 160,width: 160,fit: BoxFit.fill,
-                                    ),
-                                    Image.network(
-                                      data[_level-1]['options'][1]['image'],height: 160,width: 160,fit: BoxFit.fill,
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Image.network(
-                                      data[_level-1]['options'][2]['image'],height: 160,width: 160,fit: BoxFit.fill,
-                                    ),
-                                    Image.network(
-                                      data[_level-1]['options'][3]['image'],height: 160,width: 160,fit: BoxFit.fill,
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 30.0),
-                                ),
-                                SizedBox(
-                                  height: 40.0,
-                                  width: 250.0,
-                                  child: new RaisedButton(
-                                    elevation: 50.0,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius: new BorderRadius.circular(12.0)),
-                                    color: Colors.lightGreen,
-                                    child: new Text("Your Answer",
-                                        style: new TextStyle(fontSize: 30.0, color: Colors.white)),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20.0),
-                                ),
-                                showAnsweredOptions(),
-                                 Padding(
-                                   padding: const EdgeInsets.only(top: 30.0),
-                                 ),
-                                SizedBox(
-                                  height: 40.0,
-                                  width: 250.0,
-                                  child: new RaisedButton(
-                                    elevation: 50.0,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius: new BorderRadius.circular(12.0)),
-                                    color: Colors.lightGreen,
-                                    child: new Text("Given Letters",
-                                        style: new TextStyle(fontSize: 30.0, color: Colors.white)),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 20.0),
-                                ),
-                                 showAnswerOptions(),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                ],
-
+        appBar: AppBar(
+          title: Text(
+            "Level: " '$_level'.toString(),
+            style: TextStyle(fontSize: 40.0, color: Colors.red),
+          ),
+          leading: GestureDetector(
+            onTap: () {
+              _onBackPressed();
+            },
+            child: Icon(
+              Icons.arrow_back_ios, // add custom icons also
             ),
           ),
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.monetization_on,
+                    color: Colors.amber,
+                    size: 40.0,
+                  ),
+                )),
+            Padding(
+                padding: EdgeInsets.only(right: 20.0, top: 15.0),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Text(
+                    '$_points'.toString(),
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  ),
+                )),
+          ],
+        ),
+        body: isLoading
+            ? WaitingScreen()
+            : Stack(
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      image: new DecorationImage(
+                        image: new AssetImage("assets/background.png"),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              padding: EdgeInsets.only(top: 20.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Image.network(
+                                        data[_level - 1]['options'][0]['image'],
+                                        height: 160,
+                                        width: 160,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      Image.network(
+                                        data[_level - 1]['options'][1]['image'],
+                                        height: 160,
+                                        width: 160,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Image.network(
+                                        data[_level - 1]['options'][2]['image'],
+                                        height: 160,
+                                        width: 160,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      Image.network(
+                                        data[_level - 1]['options'][3]['image'],
+                                        height: 160,
+                                        width: 160,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 30.0),
+                                  ),
+                                  SizedBox(
+                                    height: 40.0,
+                                    width: 250.0,
+                                    child: new RaisedButton(
+                                      elevation: 50.0,
+                                      shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(12.0)),
+                                      color: Colors.lightGreen,
+                                      child: new Text("Your Answer",
+                                          style: new TextStyle(
+                                              fontSize: 30.0,
+                                              color: Colors.white)),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 20.0),
+                                  ),
+                                  showAnsweredOptions(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 30.0),
+                                  ),
+                                  SizedBox(
+                                    height: 40.0,
+                                    width: 250.0,
+                                    child: new RaisedButton(
+                                      elevation: 50.0,
+                                      shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(12.0)),
+                                      color: Colors.lightGreen,
+                                      child: new Text("Given Letters",
+                                          style: new TextStyle(
+                                              fontSize: 30.0,
+                                              color: Colors.white)),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 20.0),
+                                  ),
+                                  showAnswerOptions(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 
   // to add answer into answered variable
   addToAnswered(String asdf) {
-    _answer=_answer+asdf;
-    answer=answer.replaceFirst(new RegExp(asdf), '');
+    _answer = _answer + asdf;
+    answer = answer.replaceFirst(new RegExp(asdf), '');
     showAnswerOptions();
     showAnsweredOptions();
-    if(answer.isEmpty){
+    if (answer.isEmpty) {
       verify();
     }
   }
 
   // To remove letters from Answered and adding it back into given option
   removeFromAnswered(String asdf) {
-    answer=answer+asdf;
-    _answer=_answer.replaceFirst(new RegExp(asdf), '');
+    answer = answer + asdf;
+    _answer = _answer.replaceFirst(new RegExp(asdf), '');
     showAnswerOptions();
     showAnsweredOptions();
   }
 
-  Widget showAnswerOptions(){
-    List ans=answer.split('').toList()..shuffle();
+  Widget showAnswerOptions() {
+    List ans = answer.split('').toList()..shuffle();
     return GridView.count(
         primary: false,
         crossAxisCount: 10,
@@ -201,13 +232,22 @@ class _PlayPageState extends State<PlayPage> {
                       addToAnswered(urla);
                     });
                   },
-                  child: Container( height:25.0,width:25.0,color:Colors.red,child: Text(urla,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20.0),)))
-          );
+                  child: Container(
+                      height: 25.0,
+                      width: 25.0,
+                      color: Colors.red,
+                      child: Text(
+                        urla,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0),
+                      ))));
         }).toList());
   }
 
   //
-  Widget showAnsweredOptions(){
+  Widget showAnsweredOptions() {
     return GridView.count(
         primary: false,
         crossAxisCount: 10,
@@ -224,21 +264,29 @@ class _PlayPageState extends State<PlayPage> {
                       removeFromAnswered(urla);
                     });
                   },
-                  child: Container(height:25.0,width:25.0,color:Colors.green,child: Text(urla,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20.0),)))
-          );
+                  child: Container(
+                      height: 25.0,
+                      width: 25.0,
+                      color: Colors.green,
+                      child: Text(
+                        urla,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0),
+                      ))));
         }).toList());
   }
 
-    //verifies whether the answer is correct or not
-  verify(){
-    String x=data[_level-1]['answer'];
- if(equalsIgnoreCase(x.trim(),_answer.trim())){
-   _incrementCounter();
-   CorrectAnswer();
- }
- else{
-   wrongAnswer();
- }
+  //verifies whether the answer is correct or not
+  verify() {
+    String x = data[_level - 1]['answer'];
+    if (equalsIgnoreCase(x.trim(), _answer.trim())) {
+      _incrementCounter();
+      CorrectAnswer();
+    } else {
+      wrongAnswer();
+    }
   }
 
   // increments the level and score if the answer is correct
@@ -246,8 +294,8 @@ class _PlayPageState extends State<PlayPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final int counter = (prefs.getInt('counter') ?? 0) + 1;
     setState(() {
-     prefs.setInt("points", _points+4);
-     prefs.setInt("levels", _level+1);
+      prefs.setInt("points", _points + 4);
+      prefs.setInt("levels", _level + 1);
     });
   }
 
@@ -264,53 +312,63 @@ class _PlayPageState extends State<PlayPage> {
             FlatButton(
               child: Text('No'),
               onPressed: () {
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                  builder: (context) => Home(),
-                ), (e) => false);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Home(),
+                    ),
+                    (e) => false);
               },
             ),
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                  builder: (context) => PlayPage(),
-                ), (e) => false);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlayPage(),
+                    ),
+                    (e) => false);
               },
             )
           ],
         );
       },
-    ) ;
+    );
   }
 
   // Appears on screen if user presses back on androis screen
   Future<bool> _onBackPressed() {
     return showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Are you sure?'),
-          content: Text('Do you want to exit the Game'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            FlatButton(
-              child: Text('Yes'),
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                  builder: (context) => Home(),
-                ), (e) => false);
-              },
-            )
-          ],
-        );
-      },
-    ) ?? false;
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Are you sure?'),
+              content: Text('Do you want to exit the Game'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('No'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                FlatButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Home(),
+                        ),
+                        (e) => false);
+                  },
+                )
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 
   // Appears if the answer given by the user is correct
@@ -326,29 +384,35 @@ class _PlayPageState extends State<PlayPage> {
             FlatButton(
               child: Text('No'),
               onPressed: () {
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                  builder: (context) => Home(),
-                ), (e) => false);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Home(),
+                    ),
+                    (e) => false);
               },
             ),
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                  builder: (context) => PlayPage(),
-                ), (e) => false);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlayPage(),
+                    ),
+                    (e) => false);
               },
             )
           ],
         );
       },
-    ) ;
+    );
   }
 
   // to compare two strings irrespective of their cases
   bool equalsIgnoreCase(String a, String b) =>
       (a == null && b == null) ||
-          (a != null && b != null && a.toLowerCase() == b.toLowerCase());
+      (a != null && b != null && a.toLowerCase() == b.toLowerCase());
 
   // disposes the super and answer controller
   @override

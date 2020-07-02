@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'Home.dart';
+
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
+
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
@@ -11,12 +13,13 @@ class _SplashScreenState extends State<SplashScreen> {
     // to make the splash screen stay on display for 5 seconds
     Future.delayed(
       Duration(seconds: 5),
-          (){
-        Navigator.pushAndRemoveUntil(context,
+      () {
+        Navigator.pushAndRemoveUntil(
+            context,
             MaterialPageRoute(
-              builder: (context)=> Home(),
-            ),(e) => false
-        );
+              builder: (context) => Home(),
+            ),
+            (e) => false);
       },
     );
   }
@@ -32,8 +35,9 @@ class _SplashScreenState extends State<SplashScreen> {
             decoration: BoxDecoration(
               image: new DecorationImage(
                 image: new AssetImage("assets/background.png"),
-                fit: BoxFit.fill,),
-                ),
+                fit: BoxFit.fill,
+              ),
+            ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -52,20 +56,34 @@ class _SplashScreenState extends State<SplashScreen> {
                           radius: 110.0,
                         ),
                       ),
-                      Padding(padding: const EdgeInsets.only(top: 60.0),),
-                      Text("Welcome to Name-Game",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 60.0),
+                      ),
+                      Text(
+                        "Welcome to Raden Up",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0),
+                      )
                     ],
                   ),
                 ),
               ),
               Expanded(
                 flex: 1,
-                child:Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     CircularProgressIndicator(
                       backgroundColor: Colors.white,
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 60.0),
+                    ),
+                    Text(
+                      "From \n NEXAEX",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                    )
                   ],
                 ),
               )
