@@ -1,6 +1,9 @@
 # Name-Game
 #### This is a single player flutter game in which a person has to find a one word link between the given four pics.
 
+
+## Download the Game: [Click here](https://bit.ly/radenup)
+
 ### Features
 1. Shared Preferences is used to store the user's progress
 2. API is called ussing HTTP client
